@@ -13,18 +13,17 @@ namespace magique
 
     void BatchMessage(const Connection conn, const Payload payload, const SendFlag flag)
     {
-        MAGIQUE_ASSERT(conn != Connection::INVALID_CONNECTION, "Passed invalid input parameters");
         MAGIQUE_ASSERT(payload.size > 0, "Passed invalid input parameters");
         MAGIQUE_ASSERT(flag == SendFlag::UNRELIABLE || flag == SendFlag::RELIABLE, "Passed invalid input parameters");
 
+        if (!GetInMultiplayerSession() || conn == Connection::INVALID_CONNECTION) [[unlikely]]
+        {
+            return;
+        }
         // This can cause runtime crash
         if (payload.data == nullptr || payload.size > BatchBuffer::BUFF_SIZE) [[unlikely]]
         {
             LOG_WARNING("Invalid payload data");
-            return;
-        }
-        if (!GetInMultiplayerSession()) [[unlikely]]
-        {
             return;
         }
         auto& data = global::MP_DATA;

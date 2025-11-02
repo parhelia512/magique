@@ -4,8 +4,12 @@
 
 namespace magique
 {
-    void internal::AssertHandler(const char* expr, const char* file, const int line, const char* message)
+
+    void internal::AssertHandler(const char* expr, const char* file, const int line, const char* function,
+                                 const char* message)
     {
-        LOG_FATAL("Assert failed: %s\nAt: %s:%d\nMessage: %s\n", expr, file, line, message);
+        LogEx(LEVEL_FATAL, file, line, function, "Assert failed %s:%d\n %s:%s\nMessage: %s\n", file, line, function,
+              expr, message);
     }
+
 } // namespace magique
